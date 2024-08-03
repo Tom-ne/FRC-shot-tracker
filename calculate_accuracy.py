@@ -22,6 +22,9 @@ max_spread = max(
     for j in range(i + 1, len(shot_positions))
 )
 
+std_deviation_percent = (std_deviation / mean_distance) * 100 if mean_distance != 0 else 0
+
 print(f"Mean Distance from Center: {mean_distance:.2f}")
 print(f"Standard Deviation of Distances: {std_deviation:.2f}")
+print(f"Standard Deviation as Percentage: {std_deviation_percent:.2f}")
 print(f"Maximum Spread between Shots: {max_spread:.2f}")
