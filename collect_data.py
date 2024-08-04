@@ -27,6 +27,12 @@ def main():
         cv2.destroyAllWindows()
         return
 
+    prev_center = None
+    prev_velocity = None
+
+    # Define a threshold for detecting significant velocity changes
+    velocity_change_threshold = 10.0  # Adjust this value as needed
+
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -61,10 +67,22 @@ def main():
                 # Draw circle at the center of detected object
                 cv2.circle(frame, (center_x, center_y), 5, (0, 0, 255), -1)
 
-                # Append shot position to the list
-                shot_positions.append((center_x, center_y))
-                print(f"Shot detected at position: ({center_x}, {center_y})")
+                # Calculate velocity
+                if prev_center is not None:
+                    dx = center_x - prev_center[0]
+                    dy = center_y - prev_center[1]
+                    velocity = np.sqrt(dx**2 + dy**2)
 
+                    # Calculate and print velocity change
+                    if prev_velocity is not None:
+                        velocity_change = abs(velocity - prev_velocity)
+                        
+                        # Check if velocity change exceeds threshold
+                        if velocity_change > velocity_change_threshold:
+                            print(f"Significant speed difference detected: {velocity_change:.2f} at ({center_x}, {center_y})")
+                            shot_positions.append((center_x, center_x))
+
+                    prev_velocity = velocity
                 # Pause briefly to avoid overwhelming the console with too many messages
                 time.sleep(0.5)
 
